@@ -33,14 +33,18 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('app/go.sum') }}
+
+    - name: Download Go modules
+      working-directory: ./app
+      run: go mod download
 
     - name: Build Go binary
-      run: |
-        go mod download
-        CGO_ENABLED=0 GOOS=linux go build -o auth-service ./app
+      working-directory: ./app
+      run: CGO_ENABLED=0 GOOS=linux go build -o auth-service
 
     - name: Run tests
+      working-directory: ./app
       run: go test ./... -v
 
     - name: Log in to Docker
@@ -50,9 +54,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker image
-      run: |
-        docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest ./app
+      run: docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest ./app
 
     - name: Push Docker image
-      run: |
-        docker push $DOCKER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
+      run: docker push $DOCKER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
