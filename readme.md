@@ -37,15 +37,14 @@ cd auth-service-go
 
 ### 2. Create a Local Kubernetes Cluster
 ```bash
-k3d cluster create dev-cluster --agents 1
+k3d cluster create dev-cluster \
+  --api-port 127.0.0.1:6443 \
+  --servers 1 \
+  --agents 1
+
 kubectl get nodes
 ```
 You should see both server and agent nodes in Ready state.
-
-If ```kubectl get nodes ```does not work, see the error message, see the PORT, then use this command: 
-```bash
-kubectl config set-cluster k3d-dev-cluster --server=https://localhost:<PORT>
-```
 
 ### 3. Deploy Auth Service with PostgreSQL
 The Helm chart is configured to automatically deploy PostgreSQL as a subchart.
