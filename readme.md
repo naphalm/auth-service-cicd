@@ -42,9 +42,9 @@ kubectl get nodes
 ```
 You should see both server and agent nodes in Ready state.
 
-If ```kubectl get nodes ```does not work, use this command: 
+If ```kubectl get nodes ```does not work, see the error message, see the PORT, then use this command: 
 ```bash
-kubectl config set-cluster k3d-dev-cluster --server=https://localhost:50272
+kubectl config set-cluster k3d-dev-cluster --server=https://localhost:<PORT>
 ```
 
 ### 3. Deploy Auth Service with PostgreSQL
