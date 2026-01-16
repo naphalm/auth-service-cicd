@@ -14,6 +14,17 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      # Init container waits for Postgres
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.35
+          command: ['sh', '-c']
+          args:
+            - |
+              until nc -z -v -w30 {{ .Values.env.DATABASE_HOST }} {{ .Values.env.DATABASE_PORT }}; do
+                echo "Waiting for database..."
+                sleep 5
+              done
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
